@@ -1,0 +1,235 @@
+C51 COMPILER V9.55   LCD12864                                                              05/11/2021 12:40:06 PAGE 1   
+
+
+C51 COMPILER V9.55, COMPILATION OF MODULE LCD12864
+OBJECT MODULE PLACED IN .\Objects\LCD12864.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Function\LCD12864\LCD12864.c LARGE OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Fun
+                    -ction\Beep;.\Function\I2C;.\Function\LCD12864;.\Function\main;.\Function\MLX90614;.\Function\RC522;.\Function\System) DE
+                    -BUG OBJECTEXTEND PRINT(.\Listings\LCD12864.lst) OBJECT(.\Objects\LCD12864.obj)
+
+line level    source
+
+   1          //Ó°Òþ½Ù(ZGE)https://blog.csdn.net/pawn331/article/details/94977844?ops_request_misc=%257B%2522request%255
+             -Fid%2522%253A%2522161841611616780261959982%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=161
+             -841611616780261959982&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-94977844
+             -.pc_search_result_before_js&utm_term=LCD12864%E5%B8%A6%E4%B8%AD%E6%96%87%E5%AD%97%E5%BA%93
+   2          #include "LCD12864.h"
+   3          /*-------------------- ÏÂÃæÊÇµ×²ãÊ±Ðòº¯Êý --------------------*/
+   4          /*********************************************************************
+   5          * º¯ Êý Ãû       : lcd12864_parallel_busy
+   6          * º¯Êý¹¦ÄÜ               : ¼ì²éLCDÃ¦×´Ì¬£¬lcd12864_parallel_busyÎª1Ê±£¬Ã¦£¬µÈ´ý¡£lcd12864_parallel_busyÎª0Ê±,ÏÐ£¬¿ÉÐ´Ö
+             -¸ÁîÓëÊý¾Ý¡£
+   7          * ²ÎÊýÁÐ±í       : ÎÞ
+   8          * º¯ÊýÊä³ö       : Êä³ö1Ê±ÎªÃ¦£¬·´Ö®ÎªÏÐ
+   9          *********************************************************************/
+  10          bit lcd12864_parallel_busy() {
+  11   1          bit result;
+  12   1          LCD_RS = 0; //Ñ¡ÔñÃüÁîÄ£Ê½
+  13   1          LCD_RW = 1; //Ñ¡Ôñ¶ÁÈ¡
+  14   1          LCD_EN = 1; //²Ù×÷Ê¹ÄÜ
+  15   1          _nop_();_nop_();_nop_();_nop_();//¶ÌÔÝÑÓÊ±
+  16   1          result = (bit)(P0 & 0x80);//Êý¾ÝÒý½ÅµÄ×î¸ßÎ»´æ´¢Ã¦ÏÐ×´Ì¬
+  17   1          LCD_EN = 0; //¹Ø±Õ²Ù×÷Ê¹ÄÜ
+  18   1          return(result);
+  19   1      }
+  20          
+  21          /*********************************************************************
+  22          * º¯ Êý Ãû       : lcd12864_parallel_write_cmd
+  23          * º¯Êý¹¦ÄÜ               : °´ÕÕLCD12864µÍ²ãÊ±ÐòÏòLCDÄÚ²¿Ð´Èë8Î»ÃüÁî×Ö
+  24          * ²ÎÊýÁÐ±í       : cmd - ´ýÐ´ÈëµÄ8Î»ÃüÁî×Ö
+  25          * º¯ÊýÊä³ö       : ÎÞ
+  26          *********************************************************************/
+  27          void lcd12864_parallel_write_cmd(unsigned char cmd) {
+  28   1          while(lcd12864_parallel_busy());//µÈLCDÏÐÊ±²Å²Ù×÷
+  29   1      
+  30   1          LCD_RS = 0; //Ñ¡ÔñÃüÁîÄ£Ê½
+  31   1          LCD_RW = 0; //Ñ¡Ôñ¶ÁÈ¡
+  32   1          LCD_EN = 0; //ÏÈ¹Ø±ÕÊ¹ÄÜ£¬µÈÊý¾ÝÐ´Íê²ÅÊ¹ÄÜ
+  33   1          _nop_();
+  34   1          _nop_();
+  35   1          P0 = cmd; //½«Êý¾ÝÓ³Éäµ½P0¶Ë¿Ú
+  36   1          _nop_();
+  37   1          _nop_();
+  38   1          _nop_();
+  39   1          _nop_();
+  40   1          LCD_EN = 1; //´ò¿ªÊ¹ÄÜÈÃ¸Õ¸ÕÓ³ÉäµÄÊý¾ÝÐ´ÈëLCD
+  41   1          _nop_();_nop_();_nop_();_nop_();//µÈ´ýÊ±ÐòÈÃÉÏÃæÐ´ÈëµÄÊý¾Ý¼ÇÂ¼ÎªÓÐÐ§Êý¾Ý
+  42   1          LCD_EN = 0; //¹Ø±Õ²Ù×÷Ê¹ÄÜ
+  43   1      }
+  44          
+  45          /*********************************************************************
+  46          * º¯ Êý Ãû       : lcd12864_parallel_write_data
+  47          * º¯Êý¹¦ÄÜ               : °´ÕÕLCD12864µÍ²ãÊ±ÐòÏòLCDÄÚ²¿Ð´Èë8Î»Êý¾Ý
+  48          * ²ÎÊýÁÐ±í       : dat - ´ýÐ´ÈëµÄ8Î»ÃüÁî×Ö
+  49          * º¯ÊýÊä³ö       : ÎÞ
+C51 COMPILER V9.55   LCD12864                                                              05/11/2021 12:40:06 PAGE 2   
+
+  50          *********************************************************************/
+  51          void lcd12864_parallel_write_data(unsigned char dat) {
+  52   1          while(lcd12864_parallel_busy());
+  53   1      
+  54   1          LCD_RS = 1; //Ñ¡ÔñÊý¾ÝÄ£Ê½
+  55   1          LCD_RW = 0; //Ñ¡ÔñÐ´ÈëÄ£Ê½
+  56   1          LCD_EN = 0; //ÏÂÃæµÄ²Ù×÷ºÍÐ´ÈëÃüÁîÊ±Ò»Ñù
+  57   1          P0 = dat;
+  58   1          _nop_();
+  59   1          _nop_();
+  60   1          _nop_();
+  61   1          _nop_();
+  62   1          LCD_EN = 1;
+  63   1          _nop_();
+  64   1          _nop_();
+  65   1          _nop_();
+  66   1          _nop_();
+  67   1          LCD_EN = 0;
+  68   1      }
+  69          
+  70          /*-------------------- ÉÏÃæÊÇµ×²ãÊ±Ðòº¯Êý£¬ÏÂÃæÊÇ¸ß²ãÊ±Ðòº¯Êý --------------------*/
+  71          /*********************************************************************
+  72          * º¯ Êý Ãû       : lcd12864_parallel_init()
+  73          * º¯Êý¹¦ÄÜ               : °´ÕÕLCD12864µÍ²ãÊ±Ðò½øÐÐ³õÊ¼»¯ÐòÁÐ
+  74          * ²ÎÊýÁÐ±í       : ÎÞ
+  75          * º¯ÊýÊä³ö       : ÎÞ
+  76          *********************************************************************/
+  77          void lcd12864_parallel_init() {
+  78   1          LCD_PSB = 1;         //²¢¿Ú·½Ê½
+  79   1          lcd12864_parallel_write_cmd(0x34);      //À©³äÖ¸Áî²Ù×÷ ¸ßËÄÎ» 0011´ú±í°´ÕÕ8Î»²¢ÐÐµÄ·½Ê½´«ÊäÊý¾Ý ºóËÄÎ»
+             -´ú±íÀ©³äÖ¸Áî¼¯
+  80   1          Delay_Ms_(5);
+  81   1          lcd12864_parallel_write_cmd(0x30);      //ÔÚÕâÀïÓÖ½«À©³äÖ¸Áî¸ÄÎªÁË»ù±¾Ö¸Áî²Ù×÷
+  82   1          Delay_Ms_(5);
+  83   1          lcd12864_parallel_write_cmd(0x0C);      //ÏÔÊ¾¿ª£¬¹Ø¹â±ê
+  84   1          Delay_Ms_(5);
+  85   1          lcd12864_parallel_write_cmd(0x01);      //Çå³ýLCDµÄÏÔÊ¾ÄÚÈÝ
+  86   1          Delay_Ms_(5);
+  87   1      }
+  88          
+  89          /*********************************************************************
+  90          * º¯ Êý Ãû       : lcd12864_parallel_pos
+  91          * º¯Êý¹¦ÄÜ               : LCDÏÔÊ¾µÄ×ø±ê
+  92          * ²ÎÊýÁÐ±í       : X,YÖáx - ºáÏò×ø±ê£¬·¶Î§ÊÇ0-7
+  93          *                                  y - ×ÝÏò×ø±ê£¬·¶Î§ÊÇ0-3
+  94          * º¯ÊýÊä³ö       : ÎÞ
+  95          *********************************************************************/
+  96          void lcd12864_parallel_pos(unsigned char X, unsigned char Y) {
+  97   1          unsigned char  pos;
+  98   1      
+  99   1          if(X == 0) {//µÚÒ»ÐÐµÄµØÖ·ÊÇ80H
+ 100   2              X = 0x80;
+ 101   2          } else if(X == 1) {//µÚ¶þÐÐµÄµØÖ·ÊÇ90H
+ 102   2              X = 0x90;
+ 103   2          } else if(X == 2) {//µÚÈýÐÐµÄµØÖ·ÊÇ88H
+ 104   2              X = 0x88;
+ 105   2          } else if(X == 3) {//µÚËÄÐÐµÄµØÖ·ÊÇ98H
+ 106   2              X = 0x98;
+ 107   2          }
+ 108   1      
+ 109   1          pos = X + Y;
+ 110   1          lcd12864_parallel_write_cmd(pos);//ÏÔÊ¾µØÖ·
+C51 COMPILER V9.55   LCD12864                                                              05/11/2021 12:40:06 PAGE 3   
+
+ 111   1      }
+ 112          
+ 113          /*********************************************************************
+ 114          * º¯ Êý Ãû       : lcd12864_parallel_string(unsigned char *str)
+ 115          * º¯Êý¹¦ÄÜ               : ¾­¹ýlcd12864_parallel_pos¶¨Î»ºó¿ªÊ¼ÏÔÊ¾×Ö·û
+ 116          * ²ÎÊýÁÐ±í       : str - Ö¸Ïò´ýÏÔÊ¾µÄ×Ö·û´®µÄÖ¸Õë
+ 117          * º¯ÊýÊä³ö       : ÎÞ
+ 118          *********************************************************************/
+ 119          void lcd12864_parallel_string(unsigned char *str) {
+ 120   1          while(*str > 0) {
+ 121   2              lcd12864_parallel_write_data(*str);
+ 122   2              str++;
+ 123   2              Delay_Ms_(1);
+ 124   2          }
+ 125   1      }
+ 126          /*********************************************************************
+ 127          * º¯ Êý Ãû       : lcd12864_Clean(void)
+ 128          * º¯Êý¹¦ÄÜ               : ÇåÆÁ
+ 129          * ²ÎÊýÁÐ±í       : ÎÞ
+ 130          * º¯ÊýÊä³ö       : ÎÞ
+ 131          *********************************************************************/
+ 132          void lcd12864_Clean(void)
+ 133          {
+ 134   1          lcd12864_parallel_write_cmd(0x01);      //Çå³ýLCDµÄÏÔÊ¾ÄÚÈÝ
+ 135   1          Delay_Ms_(5);
+ 136   1      }
+ 137          /*********************************************************************
+ 138          * º¯ Êý Ãû       : lcd12864_Drawing(unsigned char *data)
+ 139          * º¯Êý¹¦ÄÜ               : ¾­¹ýlcd12864_parallel_pos¶¨Î»ºó¿ªÊ¼ÏÔÊ¾×Ö·û
+ 140          * ²ÎÊýÁÐ±í       : str - Ö¸Ïò´ýÏÔÊ¾µÄ×Ö·û´®µÄÖ¸Õë
+ 141          * º¯ÊýÊä³ö       : ÎÞ
+ 142          *********************************************************************/
+ 143          //void lcd12864_Drawing(unsigned char *Bmp)
+ 144          //{
+ 145          //    unsigned int line,row;
+ 146          //    lcd12864_parallel_write_cmd(0x34);
+ 147          //    lcd12864_parallel_write_cmd(0x34);
+ 148          //    for(line = 0;line < 32;line++)
+ 149          //    {
+ 150          //        lcd12864_parallel_write_cmd(0x80+line);
+ 151          //        lcd12864_parallel_write_cmd(0x80);
+ 152          //        for(row = 0;row < 16;row++)
+ 153          //        {lcd12864_parallel_write_data(*Bmp ++);}
+ 154          //    }
+ 155          //    for(line = 0;line < 32;line++)
+ 156          //    {
+ 157          //        lcd12864_parallel_write_cmd(0x80+line);
+ 158          //        lcd12864_parallel_write_cmd(0x88);
+ 159          //        for(row = 0;row < 16;row++)
+ 160          //        {lcd12864_parallel_write_data(*Bmp ++);}
+ 161          //    }
+ 162          //    lcd12864_parallel_write_cmd(0x36);
+ 163          //    lcd12864_parallel_write_cmd(0x30);
+ 164          //}
+ 165          /*********************************************************************
+ 166          * º¯ Êý Ãû       : LCD12864_DisplayOneLine(unsigned char position,unsigned char *p)
+ 167          * º¯Êý¹¦ÄÜ               : ÔÚÖ¸¶¨Î»ÖÃÏÔÊ¾10¸ö×Ö·ûÖ÷ÒªÓÃÓÚÏÔÊ¾¿¨ºÅÐÅÏ¢
+ 168          * ²ÎÊýÁÐ±í       : position¶¨Î»·¶Î§£¨0x80¡¢0x88¡¢0x90¡¢0x98¿ÉÒÔÍ¨¹ý¼Ó·¨Î¢µ÷Î»ÖÃ£©*pÐèÒª´«ÊäµÄ¿¨ºÅÐÂÐÅÏ¢
+ 169          * º¯ÊýÊä³ö       : ÎÞ
+ 170          *********************************************************************/
+ 171          //void LCD12864_DisplayOneLine(unsigned char position,unsigned char *p)
+ 172          //{
+C51 COMPILER V9.55   LCD12864                                                              05/11/2021 12:40:06 PAGE 4   
+
+ 173          //       unsigned char i;
+ 174          //       lcd12864_parallel_write_cmd(position);//Ð´ÈëÒªÏÔÊ¾ÎÄ×ÖµÄÐÐµÄÊ×µØÖ·
+ 175          //       Delay_Ms_(150);
+ 176          
+ 177          //       for(i = 0;i<10;i++)            //ÒÀ´ÎÖ´ÐÐÐ´Èë²Ù×÷
+ 178          //       {
+ 179          //               lcd12864_parallel_write_data(*p);
+ 180          //               p++;
+ 181          //       }
+ 182          //}
+ 183          /*********************************************************************
+ 184          * º¯ Êý Ãû       : void LCD12864_Display(unsigned char CleanFlag,unsigned char x,unsigned char y,unsigned 
+             -char * DisplayWord)
+ 185          * º¯Êý¹¦ÄÜ               : ÎªÁËÓÃ¸ü¼ò¶ÌµÄÓï¾äÍê³ÉLCDÏÔÊ¾
+ 186          * ²ÎÊýÁÐ±í       : CleanFlagÎª0Ê±»áÇåÆÁ£¬²»Îª0Ê±²»Çå£»x£¬y±í×ø±ê£¬DisplayWordÐèÒªÏÔÊ¾µÄÓï¾ä
+ 187          * º¯ÊýÊä³ö       : ÎÞ
+ 188          *********************************************************************/
+ 189          void LCD12864_Display(unsigned char CleanFlag,unsigned char x,unsigned char y,unsigned char * DisplayWord)
+ 190          {
+ 191   1          if(CleanFlag == 0)
+ 192   1          {lcd12864_Clean();}//ÇåÆÁ    
+ 193   1          lcd12864_parallel_pos(x,y);//LCDÏÔÊ¾¶¨Î»
+ 194   1          lcd12864_parallel_string(DisplayWord);//´òÓ¡ÌáÊ¾Óï¾äÕýÔÚÑ°¿¨
+ 195   1      }
+ 196          
+ 197          
+ 198          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    262    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----       9
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       1
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

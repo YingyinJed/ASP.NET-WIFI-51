@@ -1,0 +1,87 @@
+C51 COMPILER V9.55   BEEP                                                                  05/11/2021 12:40:05 PAGE 1   
+
+
+C51 COMPILER V9.55, COMPILATION OF MODULE BEEP
+OBJECT MODULE PLACED IN .\Objects\Beep.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Function\Beep\Beep.c LARGE OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Function\Be
+                    -ep;.\Function\I2C;.\Function\LCD12864;.\Function\main;.\Function\MLX90614;.\Function\RC522;.\Function\System) DEBUG OBJE
+                    -CTEXTEND PRINT(.\Listings\Beep.lst) OBJECT(.\Objects\Beep.obj)
+
+line level    source
+
+   1          //影隐劫(ZGT)
+   2          #include "Beep.h"
+   3          /*******************************************************************************
+   4          * 函数名         :Beep_Start(unsigned char RingNum,unsigned char RingTime)
+   5          * 函数功能       :让蜂鸣器根据需求启动
+   6          * 输入           :RingNum需要响的次数，每次需要响的时间
+   7          * 输出           :无
+   8          *******************************************************************************/
+   9          void Beep_Start(unsigned int RingNum,unsigned char RingTime)
+  10          {
+  11   1          unsigned char i;
+  12   1          for(i = 0;i < RingNum;i++)
+  13   1          {
+  14   2              BEEP = 0;Delay_Ms_(RingTime);
+  15   2              BEEP = 1;;Delay_Ms_(RingTime);
+  16   2          }
+  17   1      }
+  18          /*******************************************************************************
+  19          * 函数名         :Beep_Start(unsigned char RingNum,unsigned char RingTime)
+  20          * 函数功能       :让蜂鸣器根据需求启动
+  21          * 输入           :LED_TYPE需要显示的LED，RingNum需要响的次数，RingTime每次需要响的时间
+  22          * 输出           :无
+  23          *******************************************************************************/
+  24          //void LED_Start(unsigned char LED_TYPE,unsigned int RingNum,unsigned char RingTime)
+  25          //{
+  26          //    unsigned char i;
+  27          //    if(LED_TYPE == RED)
+  28          //    {
+  29          //        for(i = 0;i < RingNum;i++)
+  30          //        {
+  31          //            LED_RED = 0;Delay_Ms_(RingTime);
+  32          //            LED_RED = 1;;Delay_Ms_(RingTime);
+  33          //        }
+  34          //    }
+  35          //    if(LED_TYPE == GREEN)
+  36          //    {
+  37          //        for(i = 0;i < RingNum;i++)
+  38          //        {
+  39          //            LED_GREEN = 0;Delay_Ms_(RingTime);
+  40          //            LED_GREEN = 1;;Delay_Ms_(RingTime);
+  41          //        }
+  42          //    }    
+  43          //}
+  44          /*******************************************************************************
+  45          * 函数名         :Beep_LED_Start(unsigned char RingNum,unsigned char RingTime)
+  46          * 函数功能       :让蜂鸣器和LED根据需求启动
+  47          * 输入           :RingNum需要响的次数，每次需要响的时间
+  48          * 输出           :无
+  49          *******************************************************************************/
+  50          //void Beep_LED_Start(unsigned int RingNum,unsigned char RingTime)
+  51          //{
+  52          //    unsigned char i;
+  53          //    for(i = 0;i < RingNum;i++)
+C51 COMPILER V9.55   BEEP                                                                  05/11/2021 12:40:05 PAGE 2   
+
+  54          //    {
+  55          //        BEEP = 0;LED_RED = 0;
+  56          //        Delay_Ms_(RingTime);
+  57          //        LED_RED = 1;BEEP = 1;
+  58          //        Delay_Ms_(RingTime);
+  59          //    }
+  60          //}
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     66    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----       4
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

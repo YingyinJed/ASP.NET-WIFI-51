@@ -1,0 +1,67 @@
+/************************以下为红外体温监测的代码************************/
+            
+            while(SW1 == 1);//等待按键按下
+            if(SW1 == 0)
+            {
+                Delay_Ms_(10);//延时去抖
+                if(SW1 == 0)
+                {
+                    LED_RED = 1;//关闭提示灯
+                    LCD12864_Display(1,1,0,"检测到体温：。。");
+                    //获取红外温度传感器的温度                    
+                    MemRead(Temp_Hex);
+                    Temp_Flo = Temp_Float(Temp_Hex);
+                    while(Temp_Flo < Temp_MIN)//只有读出温度大于35°才认为是有效的温度
+                    {                        
+                        MemRead(Temp_Hex);
+                        Temp_Flo = Temp_Float(Temp_Hex); 
+                        if(Temp_Flo > Temp_MIN)//重复验证
+                        {
+                            Delay_Ms_(50);//延时50ms给传感器预热一下
+                            MemRead(Temp_Hex);
+                            Temp_Flo = Temp_Float(Temp_Hex); 
+                            sprintf(LCD_Temp,"检测到体温：%0.1f",Temp_Flo); 
+                        }                                                                    
+                    }
+                    LCD12864_Display(1,1,0,LCD_Temp);
+                   for(i = 1;i < 4;i++)
+                   {UART_Send_Temp[i] = Temp_Hex[i-1];}
+                    UART_SendString(5,UART_Send_Temp);//串口发送体温数据
+                }
+            }
+//            Beep_Start(1,500);//让蜂鸣器响1声500ms
+            while(UART_HTTP_FLAG == 0);
+            if(UART_HTTP_FLAG == 1)
+            {
+//                Beep_Start(2,500);//让蜂鸣器响2声500ms
+                //***********体温异常提示**********
+                if(Temp_Flo > Temp_MAX)
+                {
+                    LCD12864_Display(1,2,2,"添加成功");
+                    LCD12864_Display(1,2,0,"高温");
+//                    Beep_LED_Start(4,1000);//让蜂鸣器和LED分别响和闪烁4次间隔1s
+                    LED_RED = 0;
+                    while(SW2);//只有按键按下SW2才能解除警报
+                    LED_RED = 1;
+                }else
+                {
+                    LCD12864_Display(1,2,2,"添加成功");
+                    LCD12864_Display(1,2,0,"");
+                }                
+            }
+            else
+            {
+                //***********体温异常提示**********
+                if(Temp_Flo > Temp_MAX)
+                {
+                    LCD12864_Display(1,2,0,"高温");
+                }else
+                {
+                    LCD12864_Display(1,2,0,"");
+                }
+//                Beep_LED_Start(4,1000);//让蜂鸣器和LED分别响和闪烁4次间隔1s
+                LCD12864_Display(1,2,2,"添加失败");
+                LED_RED = 0;
+                while(SW2);//只有按下SW2才能解除警报
+                LED_RED = 1;
+            }

@@ -1,0 +1,42 @@
+C51 COMPILER V9.55   TIMER                                                                 05/11/2021 12:40:07 PAGE 1   
+
+
+C51 COMPILER V9.55, COMPILATION OF MODULE TIMER
+OBJECT MODULE PLACED IN .\Objects\Timer.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Function\System\Timer.c LARGE OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Function
+                    -\Beep;.\Function\I2C;.\Function\LCD12864;.\Function\main;.\Function\MLX90614;.\Function\RC522;.\Function\System) DEBUG O
+                    -BJECTEXTEND PRINT(.\Listings\Timer.lst) OBJECT(.\Objects\Timer.obj)
+
+line level    source
+
+   1          //影隐劫(ZGT)
+   2          #include "Timer.h"
+   3          
+   4          /*******************************************************************************
+   5          * 函 数 名       :Timer0_Init()
+   6          * 函数功能       :初始化定时器在11.0592MHz时钟下每次中断为10ms
+   7          * 输    入       : 无
+   8          * 输    出       : 无
+   9          *******************************************************************************/
+  10          void Timer0_Init(void)
+  11          {
+  12   1          TMOD |= 0X01;//设置其工作在工作模式1，即16位计数模式
+  13   1          TH0 = 0XDB;
+  14   1          TL0 = 0XFF;//设置初值
+  15   1          EA  = 1;//开总中断
+  16   1          ET0 = 1;//允许定时器0中断
+  17   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     14    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

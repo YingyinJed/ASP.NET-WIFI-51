@@ -1,0 +1,12 @@
+".\Objects\Beep.obj",
+".\Objects\I2C.obj",
+".\Objects\LCD12864.obj",
+".\Objects\main.obj",
+".\Objects\MLX90614.obj",
+".\Objects\RC522.obj",
+".\Objects\ASCII_HEX .obj",
+".\Objects\Delay.obj",
+".\Objects\Timer.obj",
+".\Objects\UART.obj" 
+TO ".\Objects\51_SPI_I2C_READ" 
+PRINT(".\Listings\51_SPI_I2C_READ.m51") RAMSIZE(256) 

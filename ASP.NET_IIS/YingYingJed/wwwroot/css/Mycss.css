@@ -1,0 +1,211 @@
+/*-------------------------登录页面的样式-----------------------------------*/
+/*登录表单*/
+.login-form {
+    width: 700px;
+    height: 400px;
+    background: rgba(0,0,0,0.3);
+    /*添加边框距*/
+    padding: 50px 0;/*内边距中上边距为50px*/
+    box-sizing: border-box;
+    border-radius: 10px; /*添加边框圆角*/
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    /*添加阴影*/
+    box-shadow: 0 0 5px 5px rgba(0,0,0,0.4);
+}
+    .login-form h1 {
+        text-align: center;
+        color: white;
+    }
+/*输入框设置*/
+.txtb {
+    width:50%;
+    border-bottom:2px solid #adadad;/*输入框下边框*/
+    position:relative;
+    margin-top:50px;/*外边距*/
+    margin-left:25%;
+}
+    .txtb input {
+        height: 40px;
+        font-size: 30px;
+        color:white;
+        background-color: transparent; /*透明色*/
+        border: none; /*无边框*/
+        width: 100%;
+        outline: none; /*清除蓝色点击框*/
+        padding: 0 5px;
+    }
+.User {
+    font-size: 24px;
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    color: #adadad;
+    transform: translateY(-50%);
+    z-index: -1;
+    transition: .5s;
+    cursor: pointer;
+}
+.UserLine {
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    background-color: #f7f7f7;
+    background-image: linear-gradient(90deg, #f7f7f7 0%, #777777 30%, #666666 66%, #ffffff 100%);
+    top: 40px;
+    right: 0%;
+    transition: .5s;/*添加动画*/
+}
+
+/*登录按钮*/
+.txtc {
+    width: 100%;
+    position: relative;
+    margin-top: 50px;
+    margin-left: 35%;
+}
+    .txtc .enterbtn {
+        margin-left: 5%;
+        width: 150px;
+        height: 50px;
+        border: 0;
+        border-radius: 50px; /*圆角设置*/
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        background-color: #f7f7f7;
+        background-image: linear-gradient(90deg, #f7f7f7 0%, #777777 30%, #666666 66%, #ffffff 100%);
+        background-size: 400%;
+        margin-bottom: 20px;
+        color: white;
+        float: initial;
+    }
+    /*给登录按钮添加鼠标滚上是的效果*/
+    .txtc .enterbtn:hover {
+        animation: animate 8s linear infinite;
+    }
+@keyframes animate {
+    0% {
+        background-position:0%;
+    }
+    100% {
+        background-position: 400%;
+    }    
+}
+
+/*设置按钮点击事件*/
+.Login-Frame .enterbtn:active {
+    transform: translate(0em, 0.45em);
+}
+/*给输入框文字改变颜色*/
+/*谷歌适用*/
+input::-webkit-input-placeholder {
+    color: #BDCADA
+}
+/*-------------------------登录页面的样式-----------------------------------*/
+
+/*-------------------------登录成功页面的样式-----------------------------------*/
+.TempMain {
+    display: grid; /*布局方式:二维布局*/
+    width: auto;
+    height: auto;
+    /*纵坐标分10份*/
+    grid-template-rows: [Y1] 10vh [Y2] 10vh [Y3] 10vh [Y4] 10vh [Y5] 10vh [Y6] 10vh [Y7] 10vh [Y8] 10vh [Y9] 10vh [Y10] 10vh [Y11];
+    /*横坐标分10份*/
+    grid-template-columns: [X1] 10% [X2] 10% [X3] 10% [X4] 10% [X5] 10% [X6] 10% [X7] 10% [X8]10% [X9] 10% [X10] 10% [X11];
+    /*第一个数字是横坐标第二个数字是纵坐标，原点是第一个格子，横坐标向右增长，纵坐标向下增长*/
+    grid-template-areas: "navigation navigation . . . . . . . ."
+                         "navigation navigation . . . . . . . ."
+                         "navigation navigation main main main main main main main main"
+                         "navigation navigation main main main main main main main main"
+                         "navigation navigation main main main main main main main main"
+                         "navigation navigation main main main main main main main main"
+                         "navigation navigation main main main main main main main main"
+                         "navigation navigation main main main main main main main main"
+                         "navigation navigation main main main main main main main main"
+                         "navigation navigation . . . . . . . .";
+}
+/*设置导航栏显示*/
+.TempNavigation {
+    grid-area: navigation; /*设置布局位置*/
+} 
+.TempTable {
+    overflow: hidden; /*溢出隐藏*/
+    overflow: auto; /* 溢出盒子时 自动适配滚动条 */
+    grid-area: main; /*设置布局位置*/
+}
+    /*设置表*/
+    .TempTable table {
+        text-align: center;
+        border-collapse: collapse; /*让表内的格子边框重合*/
+        font-size: 20px; /*设置字体大小*/
+        width: 100%;        
+    }
+        /*设置表头*/
+        .TempTable table th {
+            background-color: #c3dde0; /*表头背景*/
+            padding: 8px; /*设置内边距*/
+            border: 2px solid #a9c6c9; /*设置所有边框格式*/            
+        }
+        /*设置表的行特性*/
+        .TempTable table tr {
+            background-color:#d4e3e5;/*设置背景*/
+        }
+        /*设置表身特性*/
+        .TempTable table td {
+            padding: 8px; /*设置内边距*/
+            border: 2px solid #a9c6c9; /*设置所有边框格式*/
+        } 
+
+/*设置移动端时的显示*/
+@media(max-width:765px) {
+    .TempTable {
+        grid-row: Y3/Y8;
+        grid-column: X1/X11;
+    }
+    .TempTable table {
+        /* 让thead和tbody水平排列 */
+        display: flex;
+    }
+        /*表头列属性*/
+        .TempTable table thead tr {
+            /*让列中的元素成为弹性项目*/
+            display:flex;
+            /*让项目竖着显示*/
+            flex-direction:column;
+        }
+        .TempTable table tbody {
+            display:flex;
+            overflow:auto;/*溢出自动配滚动条*/
+        }
+            .TempTable table tbody tr {
+                /*让列中的元素成为弹性项目*/
+                display: flex;
+                /*让项目竖着显示*/
+                flex-direction: column;
+            }
+        /*表头的格子格式*/
+        .TempTable table thead tr th {
+            text-align: center; /*文字居中*/
+            height: 50px;
+            width: 65px;
+            /* 先把所有边框清为0 再分别设置即可 */
+            border: 0;
+            border-bottom: 2px solid rgb(200, 200, 200);
+            border-right: 2px solid rgb(200, 200, 200);
+        }
+        /*表身的格子格式*/
+        .TempTable table tbody tr td {
+        text-align: center; /*文字居中*/
+        height: 50px;
+        width: 130px;
+        /* 先把所有边框清为0 再分别设置即可 */
+        border: 0;
+        border-bottom: 2px solid rgb(200, 200, 200);
+        border-right: 2px solid rgb(200, 200, 200);
+        }
+}
+        

@@ -1,0 +1,57 @@
+C51 COMPILER V9.55   ASCII_HEX_                                                            05/11/2021 12:40:07 PAGE 1   
+
+
+C51 COMPILER V9.55, COMPILATION OF MODULE ASCII_HEX_
+OBJECT MODULE PLACED IN .\Objects\ASCII_HEX .obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Function\System\ASCII_HEX .c LARGE OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Fun
+                    -ction\Beep;.\Function\I2C;.\Function\LCD12864;.\Function\main;.\Function\MLX90614;.\Function\RC522;.\Function\System) DE
+                    -BUG OBJECTEXTEND PRINT(.\Listings\ASCII_HEX .lst) OBJECT(.\Objects\ASCII_HEX .obj)
+
+line level    source
+
+   1          //影隐劫(ZGT)
+   2          #include "ASCII_HEX.h"
+   3          /*******************************************************************************
+   4          * 函数名         :HexToChar(unsigned char bChar)
+   5          * 函数功能       :将16进制数转化为对应的ASCII码
+   6          * 输入           :需要转化的16进制数,缓存转化好的ASCII码
+   7          * 输出           :对应的ASCII码
+   8          *******************************************************************************/
+   9          void HexToChar(unsigned char bChar,unsigned char * ASCII)
+  10          {
+  11   1          ASCII[1] = bChar & 0x0F;//低四位
+  12   1          ASCII[0]  = bChar | 0x0F;//高四位
+  13   1          ASCII[0] = ASCII[0] >> 4;
+  14   1                 
+  15   1          if(0x00 <= ASCII[0] && ASCII[0] < 0x0A )
+  16   1          {
+  17   2              ASCII[0] = ASCII[0] + 0x30;
+  18   2          }//十以内是数字故加48转为数字
+  19   1          else if(0x0A <= ASCII[0] && ASCII[0] < 0X10)
+  20   1          {
+  21   2              ASCII[0] = ASCII[0] + 0x37;
+  22   2          }//十以后十字母故加81
+  23   1          
+  24   1          if(0X00 <= ASCII[1] && ASCII[1] < 0X0A )
+  25   1          {
+  26   2              ASCII[1] = ASCII[1] + 0x30;
+  27   2          }//十以内是数字故加48转为数字
+  28   1          else if(0X0A <= ASCII[1] && ASCII[1] < 0X10)
+  29   1          {
+  30   2              ASCII[1] = ASCII[1] + 0x37;
+  31   2          }//十以后十字母故加81
+  32   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    150    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----       3
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
